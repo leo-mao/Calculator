@@ -19,11 +19,11 @@ class CalculatorBrain{
     let VARIABLE = 5
 
 
-    private var accumulator = 0.0
-    private var internalProgram = [AnyObject]()
-    private var looksLike = [AnyObject]()//这个是internalProgram的展示形式，多了些括号什么的
-    private var equalsInputed = false
-    private var pending: PendingBinaryOperationInfo?
+    fileprivate var accumulator = 0.0
+    fileprivate var internalProgram = [AnyObject]()
+    fileprivate var looksLike = [AnyObject]()//这个是internalProgram的展示形式，多了些括号什么的
+    fileprivate var equalsInputed = false
+    fileprivate var pending: PendingBinaryOperationInfo?
     
     var isPartialResult = false // 感觉我的lastOp功能更强大
     var variableValues : Dictionary<String, Double> = [:]
@@ -41,16 +41,16 @@ class CalculatorBrain{
                     tmp += String(operation)
                 }
             }
-            return tmp
+            return tmp as CalculatorBrain.PropertyList
         }
     }
     
     
-    func setOperand (operand: Double) {//获得 运算数
+    func setOperand (_ operand: Double) {//获得 运算数
             accumulator = operand
-            looksLike.append(operand)
+            looksLike.append(operand as AnyObject)
             print ("(operand)[looksLike]\(looksLike)")
-            internalProgram.append(operand)
+            internalProgram.append(operand as AnyObject)
             print ("(operand)[internalProgram]\(internalProgram)")
             if (isPartialResult) {
                 isPartialResult = false
@@ -59,17 +59,17 @@ class CalculatorBrain{
      }
     
     
-    func setOperand(variableName: String){
+    func setOperand(_ variableName: String){
         print("variableValue\(variableValues)")
         if variableValues[variableName] == nil {accumulator = 0.0}
         else {
             accumulator = variableValues [variableName]!
             print("accumlator====\(accumulator)")
         }
-        looksLike.append(variableName)
-        print ("(variableName)}to[looksLike]"+String(looksLike))
-        internalProgram.append(variableName)
-        print ("(variableName)[internalProgram]"+String(internalProgram))
+        looksLike.append(variableName as AnyObject)
+        print ("(variableName)}to[looksLike]"+String(describing: looksLike))
+        internalProgram.append(variableName as AnyObject)
+        print ("(variableName)[internalProgram]"+String(describing: internalProgram))
         if (isPartialResult){
             isPartialResult = false
         }
@@ -77,42 +77,42 @@ class CalculatorBrain{
 }
 
     
-    private var operations: Dictionary<String,Operation> = [//这里的Operation是下面的枚举类型,然后这边定义的只是一个Dictionary
-        "π" : Operation.Constant(M_PI),
-        "e" : Operation.Constant(M_E),
-        "√" : Operation.UnaryOperation(sqrt),  //sqrt
-        "cos" : Operation.UnaryOperation(cos), // cos
-        "sin" : Operation.UnaryOperation(sin),
-        "×" : Operation.BinaryOperation({ $0 * $1 }),
-        "÷" : Operation.BinaryOperation({ $0 / $1 }),
-        "-" : Operation.BinaryOperation({ $0 - $1 }),
-        "+" : Operation.BinaryOperation({ $0 + $1 }),
-        "±" : Operation.UnaryOperation({ 0 - $0}),
-        "%" : Operation.UnaryOperation({ $0 / 100}),
-        "=" : Operation.Equals,
+    fileprivate var operations: Dictionary<String,Operation> = [//这里的Operation是下面的枚举类型,然后这边定义的只是一个Dictionary
+        "π" : Operation.constant(M_PI),
+        "e" : Operation.constant(M_E),
+        "√" : Operation.unaryOperation(sqrt),  //sqrt
+        "cos" : Operation.unaryOperation(cos), // cos
+        "sin" : Operation.unaryOperation(sin),
+        "×" : Operation.binaryOperation({ $0 * $1 }),
+        "÷" : Operation.binaryOperation({ $0 / $1 }),
+        "-" : Operation.binaryOperation({ $0 - $1 }),
+        "+" : Operation.binaryOperation({ $0 + $1 }),
+        "±" : Operation.unaryOperation({ 0 - $0}),
+        "%" : Operation.unaryOperation({ $0 / 100}),
+        "=" : Operation.equals,
     
     ]
-    private enum Operation {
-        case Constant(Double)
-        case UnaryOperation((Double) -> Double)//这个括号里面是了一个函数类型，把它当作int 和 double 理解就好
-        case BinaryOperation((Double,Double) -> Double)
-        case Equals
+    fileprivate enum Operation {
+        case constant(Double)
+        case unaryOperation((Double) -> Double)//这个括号里面是了一个函数类型，把它当作int 和 double 理解就好
+        case binaryOperation((Double,Double) -> Double)
+        case equals
     }
-    func performOperation(symbol: String) {//进行运算
+    func performOperation(_ symbol: String) {//进行运算
         
-        internalProgram.append(symbol)
+        internalProgram.append(symbol as AnyObject)
         print ("(brain.performOperation)[internalProgram]\(internalProgram)")
         if let operation = operations[symbol] {
             
             switch operation {
-            case .Constant(let associatedConstantValue):
+            case .constant(let associatedConstantValue):
                 accumulator = associatedConstantValue
                 if (lastOp == NUMBER)||(lastOp == CONSTANT){
-                    looksLike.removeAtIndex(looksLike.count-1)
+                    looksLike.remove(at: looksLike.count-1)
                 }
-                looksLike.append(symbol)
+                looksLike.append(symbol as AnyObject)
                 lastOp = CONSTANT
-            case .UnaryOperation(let function)://associatedFunction 这个函数是从字典里获取来的，这歌funciton 就是定义了一个函数的意思
+            case .unaryOperation(let function)://associatedFunction 这个函数是从字典里获取来的，这歌funciton 就是定义了一个函数的意思
                 accumulator = function(accumulator)
                 //往前回溯，直到遇到符号(找到最近的符号),（括号不算符号），是等号，则把前面的都圈起来，如果不是，就只圈附近的  TODO! 7+8=9sqrt
                 var index=looksLike.count-1;
@@ -120,34 +120,34 @@ class CalculatorBrain{
                 while (index>0)&&((looksLike[index] is Double)||(looksLike[index] as! String=="(")||(looksLike[index] as! String==")")){
                     index -= 1
                     }// To be Done-- 7+8++sqrt 
-                        if  String(looksLike[index]) == "=" {
-                            looksLike.insert("(",atIndex: 0)
-                            looksLike.insert(symbol,atIndex: 0)
-                            looksLike.insert(")",atIndex: looksLike.count-1)
+                        if  String(describing: looksLike[index]) == "=" {
+                            looksLike.insert("(" as AnyObject,at: 0)
+                            looksLike.insert(symbol as AnyObject,at: 0)
+                            looksLike.insert(")" as AnyObject,at: looksLike.count-1)
                             //在开通查括号，等号前面差括号
                         }
                         else {
-                            looksLike.insert("(",atIndex: index+1)
-                            looksLike.insert(symbol,atIndex: index+1)
-                            looksLike.insert(")",atIndex: looksLike.count)
+                            looksLike.insert("(" as AnyObject,at: index+1)
+                            looksLike.insert(symbol as AnyObject,at: index+1)
+                            looksLike.insert(")" as AnyObject,at: looksLike.count)
                                 //在数字前插新操作符和括号，在数字后插括号
                     }
                 }
                 else if index==0{
-                        looksLike.insert("(",atIndex: index)
-                        looksLike.insert(symbol,atIndex: index)
-                        looksLike.insert(")",atIndex: looksLike.count)
+                        looksLike.insert("(" as AnyObject,at: index)
+                        looksLike.insert(symbol as AnyObject,at: index)
+                        looksLike.insert(")" as AnyObject,at: looksLike.count)
                     }//妈的一个符号都没有，那又要例外考虑
                 lastOp = UNARY
                 
             
-            case .BinaryOperation(let function):
+            case .binaryOperation(let function):
                 executePendingBinaryOperation()
                 print("unaryOP accumulator=\(accumulator)")
                 isPartialResult = true//!!这个我都没用到
                 pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator)//这是个结构体，把function 和 accumlator放进去了
                 print("pending=\(pending)")
-                looksLike.append(symbol)
+                looksLike.append(symbol as AnyObject)
                 print("lookslike====\(looksLike)")
                 if equalsInputed {
                     replaceEquals()
@@ -155,12 +155,12 @@ class CalculatorBrain{
                 lastOp = BINARY
                 
                 
-            case .Equals:
+            case .equals:
                 executePendingBinaryOperation()
                 if equalsInputed {
                     replaceEquals()
                 } else {
-                looksLike.append(symbol)
+                looksLike.append(symbol as AnyObject)
                 equalsInputed = true
                 }
                 lastOp = EQUALS
@@ -170,12 +170,12 @@ class CalculatorBrain{
             
         }
 }
-    private func executePendingBinaryOperation(){//这个函数就是 我认为的 输入过程中的小等号
+    fileprivate func executePendingBinaryOperation(){//这个函数就是 我认为的 输入过程中的小等号
         print("pending===\(pending)")
         if pending != nil {
             accumulator = pending!.binaryFunction(pending!.firstOperand, accumulator)//原来是在这边执行了加号和乘号
             if isPartialResult {
-                looksLike.append(pending!.firstOperand)//这里修正来Assigh1.j的问题
+                looksLike.append(pending!.firstOperand as AnyObject)//这里修正来Assigh1.j的问题
                 isPartialResult = false//这里同上，另外我觉得iPartialResult比我那个简洁
 
             }
@@ -183,7 +183,7 @@ class CalculatorBrain{
             pending = nil//pending用完，保存在pending中的函数第一个操作数都被用完了；具体的第一个操作数和第二个操作数相乘请看 上面一行和两行
                     }
     }
-    private struct PendingBinaryOperationInfo{
+    fileprivate struct PendingBinaryOperationInfo{
         var binaryFunction:(Double, Double) -> Double//这个括号里面是了一个函数类型，把它当作int 和 double 理解就好，binaryFuntion就是将要操作的有两个操作数的函数
         var firstOperand: Double
     }
@@ -192,7 +192,7 @@ class CalculatorBrain{
     
     var program : PropertyList{//这个Program只是internalProgram给ViewContral提供API
         get{
-            return internalProgram
+            return internalProgram as CalculatorBrain.PropertyList
         }
         set{
             allClear()
@@ -210,13 +210,13 @@ class CalculatorBrain{
             }
         }
     }
-    private func replaceEquals(){
-        for (index,op) in looksLike.enumerate() {
-            if String(op) == "=" {
-            looksLike.removeAtIndex(index)
+    fileprivate func replaceEquals(){
+        for (index,op) in looksLike.enumerated() {
+            if String(describing: op) == "=" {
+            looksLike.remove(at: index)
             }
         }
-        looksLike+=["="]//找出原来的equals,并且替换掉
+        looksLike.append("=" as AnyObject)//找出原来的equals,并且替换掉
     }
     func allClear(){//按下AC键的，清理掉所有东西包括internalProgram，因为已经存储在ViewControl中了
         accumulator = 0.0

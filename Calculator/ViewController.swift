@@ -9,15 +9,15 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    @IBOutlet private weak var display: UILabel!
+    @IBOutlet fileprivate weak var display: UILabel!
     
-    @IBOutlet private weak var secondDisplay: UILabel!
+    @IBOutlet fileprivate weak var secondDisplay: UILabel!
     
-    private var userIsInTheMiddleOfTyping = false
-    private var userInputedDot = false
+    fileprivate var userIsInTheMiddleOfTyping = false
+    fileprivate var userInputedDot = false
    
     
-    private var displayValue : Double{
+    fileprivate var displayValue : Double{
         get{
         
             return Double(display.text!)!// maybe unconvertable
@@ -26,7 +26,7 @@ class ViewController: UIViewController {
             display.text = String(newValue)
         }
     }
-    private var brain: CalculatorBrain = CalculatorBrain()
+    fileprivate var brain: CalculatorBrain = CalculatorBrain()
     
     var savedProgram: CalculatorBrain.PropertyList?
     @IBAction func save() {
@@ -44,7 +44,7 @@ class ViewController: UIViewController {
     }
     
     
-    @IBAction private func dot(sender: UIButton) {
+    @IBAction fileprivate func dot(_ sender: UIButton) {
        
         if userIsInTheMiddleOfTyping && !userInputedDot {
             let textCurrentlyInDisplay = display.text!
@@ -52,7 +52,7 @@ class ViewController: UIViewController {
                 userInputedDot = true
         }
     }
-    @IBAction func setValue(sender: UIButton) {//setValue 也是一个Operation
+    @IBAction func setValue(_ sender: UIButton) {//setValue 也是一个Operation
 //        if userIsInTheMiddleOfTyping {//判断下是不是一个数还没输完整
             //brain.setOperand(displayValue)
             //if let variableName = sender.currentTitle{
@@ -72,7 +72,7 @@ class ViewController: UIViewController {
 //        }
         
     }
-    @IBAction private func performOperation(sender: UIButton) {//输入操作符
+    @IBAction fileprivate func performOperation(_ sender: UIButton) {//输入操作符
         if userIsInTheMiddleOfTyping {//判断下是不是一个数还没输完整(其实就能判断上一个输入的是不是数字了)
             brain.setOperand(displayValue)
             userIsInTheMiddleOfTyping = false
@@ -92,7 +92,7 @@ class ViewController: UIViewController {
         displayValue = brain.result
     }
     
-    @IBAction private func touchDigit(sender: UIButton) { // 输入数字
+    @IBAction fileprivate func touchDigit(_ sender: UIButton) { // 输入数字
         let digit = sender.currentTitle!
         if userIsInTheMiddleOfTyping {// prefer userAlreadyStartTyping
             let textCurrentlyInDisplay = display.text
@@ -107,7 +107,7 @@ class ViewController: UIViewController {
         userIsInTheMiddleOfTyping = true//一个数的输完了
     }
 
-    @IBAction func variablesSymbol(sender: UIButton) {//各司其职，他是个超级复合体
+    @IBAction func variablesSymbol(_ sender: UIButton) {//各司其职，他是个超级复合体
        
         if let variableName = sender.currentTitle {
             print("Touch MMMMMM")
