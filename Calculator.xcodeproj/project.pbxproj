@@ -14,6 +14,7 @@
 		DE4EADBB1DAAE3EC00E68D9C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE4EADB91DAAE3EC00E68D9C /* LaunchScreen.storyboard */; };
 		DE4EADC41DB3DD6F00E68D9C /* CalculatorBrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4EADC31DB3DD6F00E68D9C /* CalculatorBrain.swift */; };
 		F425A5DD1DDA3F1600D726BC /* GraphicsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F425A5DC1DDA3F1600D726BC /* GraphicsViewController.swift */; };
+		F427C41F1DE09FF000C57739 /* AxesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F427C41E1DE09FF000C57739 /* AxesDrawer.swift */; };
 		F4892AF91DD9D6DA004FA10B /* GraphicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4892AF81DD9D6DA004FA10B /* GraphicsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		DE4EADBC1DAAE3EC00E68D9C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DE4EADC31DB3DD6F00E68D9C /* CalculatorBrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CalculatorBrain.swift; path = Calculator/CalculatorBrain.swift; sourceTree = "<group>"; };
 		F425A5DC1DDA3F1600D726BC /* GraphicsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicsViewController.swift; sourceTree = "<group>"; };
+		F427C41E1DE09FF000C57739 /* AxesDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AxesDrawer.swift; sourceTree = "<group>"; };
 		F4892AF81DD9D6DA004FA10B /* GraphicsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,7 @@
 				DE4EADB41DAAE3EC00E68D9C /* Main.storyboard */,
 				F4892AF81DD9D6DA004FA10B /* GraphicsView.swift */,
 				F425A5DC1DDA3F1600D726BC /* GraphicsViewController.swift */,
+				F427C41E1DE09FF000C57739 /* AxesDrawer.swift */,
 			);
 			path = Calculator;
 			sourceTree = "<group>";
@@ -108,7 +111,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Yang Mao";
 				TargetAttributes = {
 					DE4EADAC1DAAE3EC00E68D9C = {
@@ -159,6 +162,7 @@
 				DE4EADB31DAAE3EC00E68D9C /* CalculatorViewController.swift in Sources */,
 				DE4EADB11DAAE3EC00E68D9C /* AppDelegate.swift in Sources */,
 				F425A5DD1DDA3F1600D726BC /* GraphicsViewController.swift in Sources */,
+				F427C41F1DE09FF000C57739 /* AxesDrawer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,8 +202,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -244,8 +250,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -264,6 +272,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};

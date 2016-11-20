@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="LZt-Qy-gFI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="mTx-oq-1da">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="oMI-ea-bg6">
-                                <frame key="frameInset" minX="20" minY="20" width="335" height="627"/>
+                                <frame key="frameInset" minX="20" minY="20" width="335" height="583"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Orp-H9-h2q">
                                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -248,6 +248,9 @@
                                                         <state key="normal" title="📈">
                                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         </state>
+                                                        <connections>
+                                                            <segue destination="LZt-Qy-gFI" kind="showDetail" identifier="show Graph" id="gmK-3V-6zU"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                             </stackView>
@@ -393,6 +396,7 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="oMI-ea-bg6" secondAttribute="bottom" constant="10" id="i9w-n2-AD4"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="bpT-Up-kBA"/>
                     <connections>
                         <outlet property="display" destination="Orp-H9-h2q" id="Wno-Ko-wWi"/>
                         <outlet property="secondDisplay" destination="2Px-sx-AG1" id="Fro-rn-0E6"/>
@@ -400,7 +404,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="833" y="-323"/>
+            <point key="canvasLocation" x="1772" y="-323.38830584707648"/>
         </scene>
         <!--Graphics View Controller-->
         <scene sceneID="hWc-0a-PUO">
@@ -416,6 +420,17 @@
                         <subviews>
                             <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="UGm-xq-6Dk" customClass="GraphicsView" customModule="Calculator" customModuleProvider="target">
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="scale">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="lineWidth">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="axisColor">
+                                        <color key="value" red="0.96148986334045083" green="0.36398288253056343" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -426,17 +441,20 @@
                             <constraint firstItem="UGm-xq-6Dk" firstAttribute="top" secondItem="9kA-yg-ECZ" secondAttribute="top" id="xkh-Qi-FyN"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="graphicsView" destination="UGm-xq-6Dk" id="fxP-dw-MXJ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7tn-bB-iw3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="832.79999999999995" y="354.87256371814095"/>
+            <point key="canvasLocation" x="1740" y="719"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="hPT-kU-RBf">
             <objects>
                 <splitViewController id="mTx-oq-1da" sceneMemberID="viewController">
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="masterViewController" id="6rp-CL-0UW"/>
+                        <segue destination="btU-qo-VrD" kind="relationship" relationship="masterViewController" id="6rp-CL-0UW"/>
                         <segue destination="LZt-Qy-gFI" kind="relationship" relationship="detailViewController" id="d90-rb-hsl"/>
                     </connections>
                 </splitViewController>
@@ -444,5 +462,26 @@
             </objects>
             <point key="canvasLocation" x="-31" y="-168"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="8nf-uj-rhJ">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="btU-qo-VrD" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="0Fw-Bz-kol">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="mEv-dp-3q9"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zUr-lm-reN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="832.79999999999995" y="-323.38830584707648"/>
+        </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="d90-rb-hsl"/>
+    </inferredMetricsTieBreakers>
 </document>
