@@ -17,6 +17,10 @@ class GraphicsView: UIView {
     var lineWidth : CGFloat = 0.5 { didSet{ setNeedsDisplay() }   }// to set lineWith here
     @IBInspectable
     var axisColor : UIColor = UIColor.blue  { didSet{ setNeedsDisplay() }   }
+    @IBInspectable
+    var pointPerRadius = 100 { didSet{ setNeedsDisplay() }   }
+    @IBInspectable
+    var maxValueForRadius = 25 { didSet{ setNeedsDisplay() }   }
     
     func changeScale(recognizer: UIPinchGestureRecognizer){
         switch recognizer.state {
@@ -36,7 +40,9 @@ class GraphicsView: UIView {
     var GraphicsRadius : CGFloat {// eqauls viewRadius
         return CGFloat(min(bounds.size.width, bounds.size.height)) / 2 * scale
     }
-
+    
+    
+    
     private struct Ratios{
         static let AxisRadiusToAxisXRadius : CGFloat = 1.0
         static let AxisRadiusToAxisYRadius : CGFloat = 1.0
@@ -62,7 +68,7 @@ class GraphicsView: UIView {
         return path
     }*/
     
-    private func pathForAxis(axis : Axis) -> UIBezierPath{
+    private func pathForAxis(axis : Axis) {
         var start, end : CGPoint
         switch axis{
         case .X: start = CGPoint(x : getAxisCenter(axis: axis).x - getAxisRadius(axis: axis), y : getAxisCenter(axis: axis).y )
@@ -73,10 +79,10 @@ class GraphicsView: UIView {
 
         }
         
-        return drawPath(start: start, end: end)
+        drawPath(start: start, end: end)
     }
  
-    private func pathForArrowLine(arrowLine : ArrowLine, axis: Axis) -> UIBezierPath{
+    private func pathForArrowLine(arrowLine : ArrowLine, axis: Axis) {
         var start, end: CGPoint
         switch axis{
         case .X:
@@ -110,31 +116,32 @@ class GraphicsView: UIView {
         case .X : for i in -4...4 {
             start = CGPoint(x: getAxisRadius(axis: axis) / 5 * CGFloat(i) + getAxisCenter(axis: axis).x, y: getAxisCenter(axis: axis).y - getAxisRadius(axis: axis) / Ratios.AxisRadiusToLengthOfScales)
             end = CGPoint(x: getAxisRadius(axis: axis) / 5 * CGFloat(i) + getAxisCenter(axis: axis).x, y: getAxisCenter(axis: axis).y + getAxisRadius(axis: axis) / Ratios.AxisRadiusToLengthOfScales)
-            drawPath(start: start, end: end).stroke()
+            drawPath(start: start, end: end)
             }
         case .Y : for i in -4...4 {
             start = CGPoint(x: getAxisCenter(axis: axis).x - getAxisRadius(axis: axis) / Ratios.AxisRadiusToLengthOfScales, y: getAxisRadius(axis: axis) / 5 * CGFloat(i) + getAxisCenter(axis: axis).y)
             end = CGPoint(x: getAxisCenter(axis: axis).x + getAxisRadius(axis: axis) / Ratios.AxisRadiusToLengthOfScales, y: getAxisRadius(axis: axis) / 5 * CGFloat(i) + getAxisCenter(axis: axis).y)
-            drawPath(start: start, end: end).stroke()
+            drawPath(start: start, end: end)
             }
         }
     }
     
-    func drawPath(start: CGPoint, end: CGPoint)->UIBezierPath{
+    func drawPath(start: CGPoint, end: CGPoint){
         let path = UIBezierPath()
         path.move(to: start)
         path.addLine(to: end)
         path.lineWidth = lineWidth
-        return path
+        path.stroke()
+        setNeedsDisplay()
     }
     private func drawAxis(){
         axisColor.set()
-        pathForAxis(axis: .X).stroke()
-        pathForAxis(axis: .Y).stroke()
-        pathForArrowLine(arrowLine: .backSlash, axis: .X).stroke()
-        pathForArrowLine(arrowLine: .slash, axis: .X).stroke()
-        pathForArrowLine(arrowLine: .backSlash, axis: .Y).stroke()
-        pathForArrowLine(arrowLine: .slash, axis: .Y).stroke()
+        pathForAxis(axis: .X)
+        pathForAxis(axis: .Y)
+        pathForArrowLine(arrowLine: .backSlash, axis: .X)
+        pathForArrowLine(arrowLine: .slash, axis: .X)
+        pathForArrowLine(arrowLine: .backSlash, axis: .Y)
+        pathForArrowLine(arrowLine: .slash, axis: .Y)
         pathForScale(axis: .X)
         pathForScale(axis: .Y)
         

@@ -428,7 +428,7 @@
                                         <real key="value" value="1"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="axisColor">
-                                        <color key="value" red="0.96148986334045083" green="0.36398288253056343" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="value" red="0.099770126073200571" green="0.1468363414269207" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>

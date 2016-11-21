@@ -10,12 +10,7 @@ import UIKit
 
 class GraphicsViewController: UIViewController {
 
-    var program: AnyObject?{//加个问号就能解决初始化为nil的问题了,告诉编译器这是可有可无的
-        didSet{
-            brain.program = program!
-        }
-    
-    }
+
     
     private let brain = CalculatorBrain() //妈哒， 扫清路障。 原因是 题目被我理解的复杂化，没那么难。私有brain是可以有的，因为直接创建一个brain 类就好了，然后只要把那个program通过segue传过来就好了，操你们妈不早说
     
@@ -26,6 +21,7 @@ class GraphicsViewController: UIViewController {
             graphicsView.addGestureRecognizer(UIPinchGestureRecognizer(target: graphicsView, action: #selector(graphicsView.changeScale(recognizer:)))) // an underbar here doesn't work
             updateUI()
         }
+        
     }
 
     
@@ -35,20 +31,21 @@ class GraphicsViewController: UIViewController {
         return CGFloat(brain.result)
     }
     private func convertCoordinateSystem(x:CGFloat, y:CGFloat)->CGPoint{
-        
-        
-        return CGPoint(x:x,y:y)
+
+        return CGPoint(x:graphicsView.GraphicsCenter.x + x ,y:graphicsView.GraphicsCenter.y - y)
     
     }
     private func drawFunc(){
-        var lastPoint : CGPoint? = nil
+        var lastPoint : CGPoint?
         var hasLastPoint = false
-        for i in -25...25{
-            for j in 0...100{
-                let currentX = Double(i) + Double(j)/100.0
+        for i in -graphicsView.maxValueForRadius...graphicsView.maxValueForRadius{
+            for j in -10...10{
+                let currentX = Double(i) + Double(j) / Double(10)
+                print("currentX\(currentX)")
                 let currentPoint = convertCoordinateSystem(x: CGFloat(currentX), y: calculateValueOfY(x: currentX))
                 if (hasLastPoint) {
-                    graphicsView.drawPath(start: lastPoint!, end: currentPoint).stroke()
+                    print("lastPoint\(lastPoint)")
+                    graphicsView.drawPath(start: lastPoint! , end:currentPoint)
                 }
                 lastPoint = currentPoint
                 hasLastPoint = true
@@ -57,8 +54,16 @@ class GraphicsViewController: UIViewController {
         }
         
     }
-    private func updateUI(){
+    var program: AnyObject?{//加个问号就能解决初始化为nil的问题了,告诉编译器这是可有可无的
+        didSet{
+            brain.program = program!
+        }
         
+    }
+    private func updateUI(){
+        if (program != nil){
+            drawFunc()
+        }
     }
 
 }

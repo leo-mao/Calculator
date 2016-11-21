@@ -49,9 +49,9 @@ class CalculatorBrain{
     func setOperand (_ operand: Double) {//获得 运算数
             accumulator = operand
             looksLike.append(operand as AnyObject)
-            print ("(operand)[looksLike]\(looksLike)")
+            //print ("(operand)[looksLike]\(looksLike)")
             internalProgram.append(operand as AnyObject)
-            print ("(operand)[internalProgram]\(internalProgram)")
+            //print ("(operand)[internalProgram]\(internalProgram)")
             if (isPartialResult) {
                 isPartialResult = false
             }
@@ -60,16 +60,16 @@ class CalculatorBrain{
     
     
     func setOperand(_ variableName: String){
-        print("variableValue\(variableValues)")
+        //print("variableValue\(variableValues)")
         if variableValues[variableName] == nil {accumulator = 0.0}
         else {
             accumulator = variableValues [variableName]!
-            print("accumlator====\(accumulator)")
+            //print("accumlator====\(accumulator)")
         }
         looksLike.append(variableName as AnyObject)
-        print ("(variableName)}to[looksLike]"+String(describing: looksLike))
+        //print ("(variableName)}to[looksLike]"+String(describing: looksLike))
         internalProgram.append(variableName as AnyObject)
-        print ("(variableName)[internalProgram]"+String(describing: internalProgram))
+        //print ("(variableName)[internalProgram]"+String(describing: internalProgram))
         if (isPartialResult){
             isPartialResult = false
         }
@@ -101,7 +101,7 @@ class CalculatorBrain{
     func performOperation(_ symbol: String) {//进行运算
         
         internalProgram.append(symbol as AnyObject)
-        print ("(brain.performOperation)[internalProgram]\(internalProgram)")
+        //print ("(brain.performOperation)[internalProgram]\(internalProgram)")
         if let operation = operations[symbol] {
             
             switch operation {
@@ -143,12 +143,12 @@ class CalculatorBrain{
             
             case .binaryOperation(let function):
                 executePendingBinaryOperation()
-                print("unaryOP accumulator=\(accumulator)")
+                //print("unaryOP accumulator=\(accumulator)")
                 isPartialResult = true//!!这个我都没用到
                 pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator)//这是个结构体，把function 和 accumlator放进去了
-                print("pending=\(pending)")
+                //print("pending=\(pending)")
                 looksLike.append(symbol as AnyObject)
-                print("lookslike====\(looksLike)")
+                //print("lookslike====\(looksLike)")
                 if equalsInputed {
                     replaceEquals()
                 }
@@ -171,7 +171,7 @@ class CalculatorBrain{
         }
 }
     fileprivate func executePendingBinaryOperation(){//这个函数就是 我认为的 输入过程中的小等号
-        print("pending===\(pending)")
+        //print("pending===\(pending)")
         if pending != nil {
             accumulator = pending!.binaryFunction(pending!.firstOperand, accumulator)//原来是在这边执行了加号和乘号
             if isPartialResult {
@@ -198,7 +198,7 @@ class CalculatorBrain{
             allClear()
             if let arrayOfOps = newValue as? [AnyObject]{
                 for op in arrayOfOps{//这个for循环相当于把刚刚的动作全部重新做了一遍
-                    print("op====\(op)")
+                    //print("op====\(op)")
                     if let operand = op as? Double {
                         setOperand(operand)
                     }
@@ -243,7 +243,7 @@ class CalculatorBrain{
     func updateByInternalProgram(){
         var tmp :PropertyList
         tmp = program
-        print("tmptmp=====\(tmp)")
+        //print("tmptmp=====\(tmp)")
         program = tmp
     }
     func backSpace(){
