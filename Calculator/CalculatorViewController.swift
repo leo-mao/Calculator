@@ -30,11 +30,7 @@ class CalculatorViewController: UIViewController {
     
     }
 }
-//        override func shouldPerformSegue(withIdentifier: String, sender: <#T##Any?#>)->{
-//            if segue.identifier == "show Graph"{
-//                return !brain.isPartialResult
-//        }
-    
+
     fileprivate var displayValue : Double{
         get{
         
@@ -56,7 +52,6 @@ class CalculatorViewController: UIViewController {
         allClear()//ViewContral和brain()中的数据都清除
         if (savedProgram != nil) {
         brain.program = savedProgram!
-        print("saved\(savedProgram)")
         displayValue = brain.result
         showDescription()
         }
@@ -79,7 +74,6 @@ class CalculatorViewController: UIViewController {
             brain.variableValues["M"] = displayValue
             userIsInTheMiddleOfTyping = false
             userInputedDot = false
-            print("(getM)\(brain.variableValues)")
         
             if (brain.sizeOfInternalProgram>0){
             brain.updateByInternalProgram();
@@ -131,7 +125,6 @@ class CalculatorViewController: UIViewController {
     @IBAction func variablesSymbol(_ sender: UIButton) {//各司其职，他是个超级复合体
        
         if let variableName = sender.currentTitle {
-            print("Touch MMMMMM")
             brain.setOperand(variableName)
             if let tmp = brain.variableValues[variableName] {
                 display.text! = String(tmp)

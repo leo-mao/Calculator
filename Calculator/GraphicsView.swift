@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol DataSource {
+    func calculateValueOfY(x: CGFloat) -> CGFloat?
+}
+
 @IBDesignable
 
 class GraphicsView: UIView {
@@ -18,9 +22,14 @@ class GraphicsView: UIView {
     @IBInspectable
     var axisColor : UIColor = UIColor.blue  { didSet{ setNeedsDisplay() }   }
     @IBInspectable
-    var pointPerRadius = 100 { didSet{ setNeedsDisplay() }   }
+    var pointPerUnit = 100 { didSet{ setNeedsDisplay() }   }
     @IBInspectable
     var maxValueForRadius = 25 { didSet{ setNeedsDisplay() }   }
+    
+    @IBInspectable
+    var color = UIColor.black {didSet{ setNeedsDisplay()} }
+    
+    private var axisCenter : CGPoint!{ didSet{ setNeedsDisplay() }   }//这样就使axisCenter变成optinal了,一定要加did set不然不会自动重绘
     
     func changeScale(recognizer: UIPinchGestureRecognizer){
         switch recognizer.state {
@@ -32,11 +41,29 @@ class GraphicsView: UIView {
         }
     }
     
+    func pan(recognizer: UIPanGestureRecognizer){
+        switch recognizer.state {
+        case .changed,.ended:
+            let translation = recognizer.translation(in: self)
+            axisCenter.x += translation.x
+            axisCenter.y += translation.y
+        default:
+            break
+        }
+        recognizer.setTranslation(CGPoint.zero, in: self)
+    }
+    func doubleTap(recognizer: UITapGestureRecognizer){
+        if recognizer.state == .ended {
+            axisCenter = recognizer.location(in: self)
+        }
+    }
     
     
     var GraphicsCenter : CGPoint {
             return CGPoint(x: bounds.midX, y: bounds.midY)
     }
+    
+    
     var GraphicsRadius : CGFloat {// eqauls viewRadius
         return CGFloat(min(bounds.size.width, bounds.size.height)) / 2 * scale
     }
@@ -44,10 +71,11 @@ class GraphicsView: UIView {
     
     
     private struct Ratios{
-        static let AxisRadiusToAxisXRadius : CGFloat = 1.0
-        static let AxisRadiusToAxisYRadius : CGFloat = 1.0
-        static let AxisRadiusToArrowLineOffset : CGFloat = 50.0 // how large should the axis arrow should look like
-        static let AxisRadiusToLengthOfScales : CGFloat = 75.0 // how the length of the scale bars
+        static let GraphicsRadiusToAxisXRadius : CGFloat = 1.0
+        static let GraphicsRadiusToAxisYRadius : CGFloat = 0.5
+        static let GraphicsRadiusToArrowLineOffset : CGFloat = 50.0 // how large should the axis arrow should look like
+        static let GraphicsRadiusToLengthOfScales : CGFloat = 75.0 // how the length of the scale bars
+
     }
     
     private enum Axis {
@@ -58,24 +86,15 @@ class GraphicsView: UIView {
         case slash
         case backSlash
     }
-    /*private func pathForCircleCenteredAtPoint(midPoint: CGPoint, withRadius radius: CGFloat) ->  UIBezierPath{
-        let path = UIBezierPath(arcCenter: midPoint ,
-                                radius: radius,
-                                startAngle: 0.0,
-                                endAngle: CGFloat(2*M_PI),
-                                clockwise: false)
-        path.lineWidth = 5
-        return path
-    }*/
     
     private func pathForAxis(axis : Axis) {
         var start, end : CGPoint
         switch axis{
-        case .X: start = CGPoint(x : getAxisCenter(axis: axis).x - getAxisRadius(axis: axis), y : getAxisCenter(axis: axis).y )
-                 end = CGPoint(x: getAxisCenter(axis: axis).x + getAxisRadius(axis: axis), y : getAxisCenter(axis: axis).y )
+        case .X: start = CGPoint(x : getAxisCenter().x - getAxisRadius(axis: axis), y : getAxisCenter().y )
+                 end = CGPoint(x: getAxisCenter().x + getAxisRadius(axis: axis), y : getAxisCenter().y )
 
-        case .Y: start = CGPoint(x : getAxisCenter(axis: axis).x , y: getAxisCenter(axis: axis).y - getAxisRadius(axis: axis))
-                 end = CGPoint(x: getAxisCenter(axis: axis).x , y : getAxisCenter(axis: axis).y + getAxisRadius(axis: axis))
+        case .Y: start = CGPoint(x : getAxisCenter().x , y: getAxisCenter().y - getAxisRadius(axis: axis))
+                 end = CGPoint(x: getAxisCenter().x , y : getAxisCenter().y + getAxisRadius(axis: axis))
 
         }
         
@@ -86,26 +105,26 @@ class GraphicsView: UIView {
         var start, end: CGPoint
         switch axis{
         case .X:
-            end = CGPoint(x: getAxisCenter(axis: axis).x + getAxisRadius(axis: axis) ,
-                          y: getAxisCenter(axis: axis).y);
+            end = CGPoint(x: getAxisCenter().x + getAxisRadius(axis: axis) ,
+                          y: getAxisCenter().y);
             switch arrowLine{
             case .backSlash :
-                start = CGPoint(x: getAxisCenter(axis: axis).x + getAxisRadius(axis: axis) - getAxisRadius(axis: axis) / Ratios.AxisRadiusToArrowLineOffset ,
-                            y: getAxisCenter(axis: axis).y - getAxisRadius(axis: axis) / Ratios.AxisRadiusToArrowLineOffset);
+                start = CGPoint(x: getAxisCenter().x + getAxisRadius(axis: axis) - getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToArrowLineOffset ,
+                            y: getAxisCenter().y - getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToArrowLineOffset);
             case .slash :
-                start = CGPoint(x: getAxisCenter(axis: axis).x + getAxisRadius(axis: axis) - getAxisRadius(axis: axis) / Ratios.AxisRadiusToArrowLineOffset ,
-                            y: getAxisCenter(axis: axis).y + getAxisRadius(axis: axis) / Ratios.AxisRadiusToArrowLineOffset);
+                start = CGPoint(x: getAxisCenter().x + getAxisRadius(axis: axis) - getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToArrowLineOffset ,
+                            y: getAxisCenter().y + getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToArrowLineOffset);
             }
         case .Y:
-            end = CGPoint(x: getAxisCenter(axis: axis).x ,
-                          y: getAxisCenter(axis: axis).y - getAxisRadius(axis: axis));
+            end = CGPoint(x: getAxisCenter().x ,
+                          y: getAxisCenter().y - getAxisRadius(axis: axis));
             switch arrowLine{
             case .backSlash :
-                start = CGPoint(x: getAxisCenter(axis: axis).x +  getAxisRadius(axis: axis) / Ratios.AxisRadiusToArrowLineOffset ,
-                                y: getAxisCenter(axis: axis).y - getAxisRadius(axis: axis) + getAxisRadius(axis: axis) / Ratios.AxisRadiusToArrowLineOffset);
+                start = CGPoint(x: getAxisCenter().x +  getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToArrowLineOffset ,
+                                y: getAxisCenter().y - getAxisRadius(axis: axis) + getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToArrowLineOffset);
             case .slash :
-                start = CGPoint(x: getAxisCenter(axis: axis).x - getAxisRadius(axis: axis) / Ratios.AxisRadiusToArrowLineOffset ,
-                                y: getAxisCenter(axis: axis).y - getAxisRadius(axis: axis) + getAxisRadius(axis: axis) / Ratios.AxisRadiusToArrowLineOffset);
+                start = CGPoint(x: getAxisCenter().x - getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToArrowLineOffset ,
+                                y: getAxisCenter().y - getAxisRadius(axis: axis) + getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToArrowLineOffset);
             }
         }
         return drawPath(start: start, end: end)
@@ -114,13 +133,13 @@ class GraphicsView: UIView {
         var start, end: CGPoint
         switch axis{
         case .X : for i in -4...4 {
-            start = CGPoint(x: getAxisRadius(axis: axis) / 5 * CGFloat(i) + getAxisCenter(axis: axis).x, y: getAxisCenter(axis: axis).y - getAxisRadius(axis: axis) / Ratios.AxisRadiusToLengthOfScales)
-            end = CGPoint(x: getAxisRadius(axis: axis) / 5 * CGFloat(i) + getAxisCenter(axis: axis).x, y: getAxisCenter(axis: axis).y + getAxisRadius(axis: axis) / Ratios.AxisRadiusToLengthOfScales)
+            start = CGPoint(x: getAxisRadius(axis: axis) / 5 * CGFloat(i) + getAxisCenter().x, y: getAxisCenter().y - getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToLengthOfScales)
+            end = CGPoint(x: getAxisRadius(axis: axis) / 5 * CGFloat(i) + getAxisCenter().x, y: getAxisCenter().y + getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToLengthOfScales)
             drawPath(start: start, end: end)
             }
-        case .Y : for i in -4...4 {
-            start = CGPoint(x: getAxisCenter(axis: axis).x - getAxisRadius(axis: axis) / Ratios.AxisRadiusToLengthOfScales, y: getAxisRadius(axis: axis) / 5 * CGFloat(i) + getAxisCenter(axis: axis).y)
-            end = CGPoint(x: getAxisCenter(axis: axis).x + getAxisRadius(axis: axis) / Ratios.AxisRadiusToLengthOfScales, y: getAxisRadius(axis: axis) / 5 * CGFloat(i) + getAxisCenter(axis: axis).y)
+        case .Y : for i in -8...8 {
+            start = CGPoint(x: getAxisCenter().x - getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToLengthOfScales, y: getAxisRadius(axis: axis) / 10 * CGFloat(i) + getAxisCenter().y)
+            end = CGPoint(x: getAxisCenter().x + getAxisRadius(axis: axis) / Ratios.GraphicsRadiusToLengthOfScales, y: getAxisRadius(axis: axis) / 10 * CGFloat(i) + getAxisCenter().y)
             drawPath(start: start, end: end)
             }
         }
@@ -132,7 +151,7 @@ class GraphicsView: UIView {
         path.addLine(to: end)
         path.lineWidth = lineWidth
         path.stroke()
-        setNeedsDisplay()
+
     }
     private func drawAxis(){
         axisColor.set()
@@ -146,41 +165,65 @@ class GraphicsView: UIView {
         pathForScale(axis: .Y)
         
     }
-    private func getAxisCenter(axis : Axis) -> CGPoint{
-        let axisCenter = GraphicsCenter // TODO offset for axises to GraphicsCenter
+    
+    
+    private func getAxisCenter() -> CGPoint{
+        
         return axisCenter
     }
     
     private func getAxisRadius(axis : Axis) -> CGFloat{
         var axisRadius = GraphicsRadius
         switch axis{
-        case .X : axisRadius /= Ratios.AxisRadiusToAxisXRadius
-        case .Y : axisRadius /= Ratios.AxisRadiusToAxisYRadius
+        case .X : axisRadius /= Ratios.GraphicsRadiusToAxisXRadius
+        case .Y : axisRadius /= Ratios.GraphicsRadiusToAxisYRadius
         }
         return axisRadius
     }
     
-//    private func pathForCircle(axis : Axis) -> UIBezierPath{
-//        let axisRadius = getAxisRadius(axis: axis)
-//        let axisCenter = getAxisCenter(axis: axis) // why do I need a label 'axis:' here???
-//        return pathForCircleCenteredAtPoint(midPoint: axisCenter, withRadius: axisRadius)
-//    }
-// 
+
+    var dataSource : DataSource?
     
+    private func drawFuncGraphics()-> UIBezierPath{ //画图什么的还是要直接在view里面完成，controller好像不行
+        let path = UIBezierPath()
+        let data = dataSource
+        var firstPoint = true
+        for i in -maxValueForRadius...maxValueForRadius-1{
+            for j in 0...pointPerUnit-1{
+                let currentX = Double(i) + Double(j) / Double(pointPerUnit)
+                
+                if let currentY = data?.calculateValueOfY(x: CGFloat(currentX)) {
+                    
+                    let currentPoint = CGPoint(
+                        x: getAxisCenter().x +
+                        CGFloat(currentX / Double(maxValueForRadius) *
+                        Double (GraphicsRadius)),
+                        y: getAxisCenter().y - currentY /
+                        CGFloat( Double(maxValueForRadius)) *
+                        CGFloat(GraphicsRadius))
+                    if !currentY.isNormal {
+                        continue
+                    }
+                    if (firstPoint) {
+                    path.move(to: currentPoint)
+                }
+                    else {
+                        path.addLine(to: currentPoint)
+                    }
+                firstPoint = false
+            }
+            
+            }
+        }
+    
+        return path//不能一个点一个点的画，必须要画线断否则会画不出切记切记
+    }
     
     override func draw(_ rect: CGRect) {
+        axisCenter = axisCenter ?? GraphicsCenter //这里必须要Optional
         
-        //let axesDrawer: AxesDrawer = AxesDrawer();
-        //axesDrawer.drawAxesInRect(bounds: bounds, origin: GraphicsCenter, pointsPerUnit: 10)
-        
-        drawAxis()
-        //drawFunc()
-//        pathForCircle(axis: .X).stroke()
-        
-//        let arrowXRech = CGRect(x: getAxisCenter(axis: Axis.X).x - getAxisRadius(axis: Axis.X), y: getAxisCenter(axis: Axis.X).y, width: getAxisRadius(axis: Axis.X) * 2, height: 1)// x,y here mean the beginning point
-//        let arrowYRech = CGRect(x: getAxisCenter(axis: .Y).x - 4, y: getAxisCenter(axis: .Y).y - getAxisRadius(axis: .Y), width: 4 * 2, height: 8)// x,y here mean the beginning point
-//        UIBezierPath(rect: arrowYRech).stroke()
-        
+       drawAxis()// 也要更新，用几个参数来重画一下
+       drawFuncGraphics().stroke()
         
     }
  
