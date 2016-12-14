@@ -1,23 +1,37 @@
 //
-//  ViewController.swift
+//  CalulatorViewController.swift
 //  Calculator
-//  Created by halley on 16/10/9.
+//  Created by geek on 16/10/9.
 //  Copyright © 2016年 Yang Mao. All rights reserved.
-//
+//ccc
 
 import UIKit
 
-class ViewController: UIViewController {
+class CalculatorViewController: UIViewController {
     
-    @IBOutlet private weak var display: UILabel!
+    @IBOutlet fileprivate weak var display: UILabel!
     
-    @IBOutlet private weak var secondDisplay: UILabel!
+    @IBOutlet fileprivate weak var secondDisplay: UILabel!
     
-    private var userIsInTheMiddleOfTyping = false
-    private var userInputedDot = false
+    fileprivate var userIsInTheMiddleOfTyping = false
+    fileprivate var userInputedDot = false
    
+    var brain: CalculatorBrain = CalculatorBrain()
     
-    private var displayValue : Double{
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "show Graph" {
+        let destinationvc = segue.destination
+        if let graphvc = destinationvc as? GraphicsViewController{
+            graphvc.title = brain.description as? String
+            graphvc.program = brain.program
+            
+        }
+    
+    }
+}
+
+    fileprivate var displayValue : Double{
         get{
         
             return Double(display.text!)!// maybe unconvertable
@@ -26,9 +40,10 @@ class ViewController: UIViewController {
             display.text = String(newValue)
         }
     }
-    private var brain: CalculatorBrain = CalculatorBrain()
+    
     
     var savedProgram: CalculatorBrain.PropertyList?
+    
     @IBAction func save() {
         savedProgram = brain.program
         }
@@ -37,14 +52,13 @@ class ViewController: UIViewController {
         allClear()//ViewContral和brain()中的数据都清除
         if (savedProgram != nil) {
         brain.program = savedProgram!
-        print("saved\(savedProgram)")
         displayValue = brain.result
         showDescription()
         }
     }
     
     
-    @IBAction private func dot(sender: UIButton) {
+    @IBAction fileprivate func dot(_ sender: UIButton) {
        
         if userIsInTheMiddleOfTyping && !userInputedDot {
             let textCurrentlyInDisplay = display.text!
@@ -52,14 +66,14 @@ class ViewController: UIViewController {
                 userInputedDot = true
         }
     }
-    @IBAction func setValue(sender: UIButton) {//setValue 也是一个Operation
+    
+    @IBAction func setValue(_ sender: UIButton) {//setValue for M 也是一个Operation
 //        if userIsInTheMiddleOfTyping {//判断下是不是一个数还没输完整
             //brain.setOperand(displayValue)
             //if let variableName = sender.currentTitle{
             brain.variableValues["M"] = displayValue
             userIsInTheMiddleOfTyping = false
             userInputedDot = false
-            print("(getM)\(brain.variableValues)")
         
             if (brain.sizeOfInternalProgram>0){
             brain.updateByInternalProgram();
@@ -72,7 +86,8 @@ class ViewController: UIViewController {
 //        }
         
     }
-    @IBAction private func performOperation(sender: UIButton) {//输入操作符
+
+    @IBAction fileprivate func performOperation(_ sender: UIButton) {//输入操作符
         if userIsInTheMiddleOfTyping {//判断下是不是一个数还没输完整(其实就能判断上一个输入的是不是数字了)
             brain.setOperand(displayValue)
             userIsInTheMiddleOfTyping = false
@@ -92,7 +107,7 @@ class ViewController: UIViewController {
         displayValue = brain.result
     }
     
-    @IBAction private func touchDigit(sender: UIButton) { // 输入数字
+    @IBAction fileprivate func touchDigit(_ sender: UIButton) { // 输入数字
         let digit = sender.currentTitle!
         if userIsInTheMiddleOfTyping {// prefer userAlreadyStartTyping
             let textCurrentlyInDisplay = display.text
@@ -107,21 +122,15 @@ class ViewController: UIViewController {
         userIsInTheMiddleOfTyping = true//一个数的输完了
     }
 
-    @IBAction func variablesSymbol(sender: UIButton) {//各司其职，他是个超级复合体
+    @IBAction func variablesSymbol(_ sender: UIButton) {//各司其职，他是个超级复合体
        
         if let variableName = sender.currentTitle {
-            print("Touch MMMMMM")
             brain.setOperand(variableName)
             if let tmp = brain.variableValues[variableName] {
                 display.text! = String(tmp)
             }
 //          display.text! = brain.variableValues[variableName] as! String 这样不行，unwrap 必须按照上面来
             showDescription()
-        
-//            if !brain.isPartialResult {//这段先不要
-//                brain.clearExceptInternalProgram()//#Assign1.h 即若不在pending的情况下突然输入，前面的数据都不要了
-                //brain.isPartialResult = true
-//            }
             userInputedDot = false
             userIsInTheMiddleOfTyping = false
         }
