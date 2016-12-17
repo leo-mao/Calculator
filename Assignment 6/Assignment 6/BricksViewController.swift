@@ -11,8 +11,9 @@ import UIKit
 class BricksViewController: UIViewController {
     @IBOutlet weak var gameView: BricksView! {
         didSet{
+            
             //gameView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addBrick(recognizer:))))
-
+            gameView.addGestureRecognizer(UIPanGestureRecognizer(target: gameView, action: #selector(BricksView.grabPanel(recognizer:))))
         }
     }
    
@@ -23,5 +24,18 @@ class BricksViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }
-    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        startGame()
+    }
+    func startGame(){
+        let number = 16
+        for sequence in 0...number-1{
+            gameView.addBrick(sequence: sequence)
+        }
+        gameView.addPanel()
+        gameView.addBall()
+        
+    }
+
 }

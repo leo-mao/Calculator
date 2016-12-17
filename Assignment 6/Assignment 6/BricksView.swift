@@ -12,6 +12,8 @@ class BricksView: UIView {
     
     let brickBehavior = BrickLikeBehavior()
     
+    let panelBehavior = PanelLikeBehavior()
+    
     private lazy var animator : UIDynamicAnimator = UIDynamicAnimator(referenceView: self)
     
 
@@ -20,8 +22,10 @@ class BricksView: UIView {
         didSet{
             if animating {
                 animator.addBehavior(brickBehavior)
+                animator.addBehavior(panelBehavior)
             } else {
                 animator.removeBehavior(brickBehavior)
+                animator.removeBehavior(panelBehavior)
             }
         }
     }
@@ -39,6 +43,20 @@ class BricksView: UIView {
         }
     }
     
+    func grabPanel(recognizer:UIPanGestureRecognizer){
+        let gesturePoint = recognizer.location(in: self)
+        switch recognizer.state {
+        case  .began:
+            if let attachTo = ball {
+                if attachTo.superview != nil {
+                    attachment = UIAttachmentBehavior(item: attachTo, attachedToAnchor: gesturePoint)
+                }
+                // create the attachemnt
+            }
+        case .changed: attachment?.anchorPoint = gesturePoint// change the attachment's anchor point
+        default: break
+        }
+    }
     private let bricksPerRow  = 4
     
     private let groove :CGFloat = 4
@@ -57,35 +75,45 @@ class BricksView: UIView {
         let brick = UIView(frame: frame)
         brick.backgroundColor = UIColor.blue
         addSubview(brick)
+        let path = UIBezierPath(rect: frame)
+        brickBehavior.addBarrier(path: path, named: PathNames.BrickBarrier)
         brickBehavior.addItem(item: brick)
 //        brickBehavior.addIte
     }
     private var radius : CGFloat {
         get{
-        return (bounds.size.width / CGFloat(bricksPerRow) - groove) / 2
+        return (bounds.size.width / CGFloat(bricksPerRow) - groove) / 3
         }
     }
     
-    private var ballSize : CGSize{
-        get{
+//    private var ballSize : CGSize{
+//        get{
+//            
+//            return CGSize(width: radius, height: radius)
+//        }
+//    }
+
+    
+    func addBall(ball: BallView){
+
+        if let referenceView = dynamicAnimator?.referencView{
+            referenceView.addSubView(ball)
             
-            return CGSize(width: radius, height: radius)
         }
-    }
-    
-    func addBall(){
-        var frame = CGRect(origin: CGPoint.zero, size: ballSize)
-        frame.origin.x = CGFloat(Double(bounds.maxX) - Double(radius)) / 2
-        frame.origin.y = CGFloat(Double(bounds.maxY) -  Double(radius)) - groove * 2
-        let oval = UIBezierPath(ovalIn: frame)
-        let ovalColor = UIColor.brown
-        
-        ovalColor.set()
-        
-        oval.fill()
-        oval.stroke()
+//        var frame = CGRect(origin: CGPoint.zero, size: ballSize)
+//        frame.origin.x = CGFloat(Double(bounds.maxX) - Double(radius)) / 2
+//        frame.origin.y = CGFloat(Double(bounds.maxY) -  Double(radius)) - groove * 2
+//        let oval = UIBezierPath(ovalIn: frame)
+//        
+//        let ovalColor = UIColor.brown
+//        
+//        ovalColor.set()
+//        
+//        oval.fill()
+//        oval.stroke()
         
     }
+
     private var thickness : CGFloat{
         get{
             return 2 * groove
@@ -101,23 +129,23 @@ class BricksView: UIView {
             return CGSize(width: widthForBoard, height: thickness)
         }
     }
-    func addBoard(){
+    private var panel: UIView?
+    func addPanel(){
         var frame = CGRect(origin: CGPoint.zero, size: boardSize)
         frame.origin.x = CGFloat(Double(bounds.maxX) - Double(widthForBoard)) / 2
-        frame.origin.y = CGFloat(Double(bounds.maxY) -  Double(radius))
-        let board = UIView(frame:frame)
-        board.backgroundColor = UIColor.cyan
-        addSubview(board)
+        frame.origin.y = CGFloat(Double(bounds.maxY) -  Double(groove*2))
+        panel = UIView(frame:frame)
+        panel?.backgroundColor = UIColor.cyan
+        addSubview(panel!)
+        
+    }
+    private struct PathNames{
+        static let BrickBarrier = "Brick Barrier"
+        
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
     }
     
-    override func draw(_ rect: CGRect) {
-        let number = 16
-        for sequence in 0...number-1{
-        addBrick(sequence: sequence)
-        addBoard()
-        addBall()
-        }
     }
-
-}

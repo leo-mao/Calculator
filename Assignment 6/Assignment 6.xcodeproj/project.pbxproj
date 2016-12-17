@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F46184A31E058775006A62B3 /* PanelLikeBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46184A21E058775006A62B3 /* PanelLikeBehavior.swift */; };
+		F46184A51E05B927006A62B3 /* BallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46184A41E05B927006A62B3 /* BallView.swift */; };
 		F46A37FA1DFD833900C2AF9B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46A37F91DFD833900C2AF9B /* AppDelegate.swift */; };
 		F46A37FF1DFD833900C2AF9B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F46A37FD1DFD833900C2AF9B /* Main.storyboard */; };
 		F46A38011DFD833900C2AF9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F46A38001DFD833900C2AF9B /* Assets.xcassets */; };
@@ -17,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F46184A21E058775006A62B3 /* PanelLikeBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanelLikeBehavior.swift; sourceTree = "<group>"; };
+		F46184A41E05B927006A62B3 /* BallView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallView.swift; sourceTree = "<group>"; };
 		F46A37F61DFD833900C2AF9B /* Assignment 6.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Assignment 6.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F46A37F91DFD833900C2AF9B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F46A37FE1DFD833900C2AF9B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -58,8 +62,10 @@
 		F46A37F81DFD833900C2AF9B /* Assignment 6 */ = {
 			isa = PBXGroup;
 			children = (
+				F46184A21E058775006A62B3 /* PanelLikeBehavior.swift */,
 				F46A38121DFDC8F700C2AF9B /* BrickLikeBehavior.swift */,
 				F46A380C1DFD85FA00C2AF9B /* BricksView.swift */,
+				F46184A41E05B927006A62B3 /* BallView.swift */,
 				F46A380E1DFD864000C2AF9B /* BricksViewController.swift */,
 				F46A37FD1DFD833900C2AF9B /* Main.storyboard */,
 				F46A380B1DFD835700C2AF9B /* Supporting Files */,
@@ -154,7 +160,9 @@
 				F46A380D1DFD85FA00C2AF9B /* BricksView.swift in Sources */,
 				F46A37FA1DFD833900C2AF9B /* AppDelegate.swift in Sources */,
 				F46A38131DFDC8F700C2AF9B /* BrickLikeBehavior.swift in Sources */,
+				F46184A51E05B927006A62B3 /* BallView.swift in Sources */,
 				F46A380F1DFD864000C2AF9B /* BricksViewController.swift in Sources */,
+				F46184A31E058775006A62B3 /* PanelLikeBehavior.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +326,7 @@
 				F46A380A1DFD833900C2AF9B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
